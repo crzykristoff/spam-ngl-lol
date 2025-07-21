@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGL Spammer</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f2f2f2; }
+input, button { margin: 10px; padding: 10px; width: 80%; max-width: 300px; }
+</style>
+</head>
+<body>
+    <h1>NGL Spammer</h1>
+    <input type="text" id="link" placeholder="Enter NGL Link"><br>
+    <input type="text" id="message" placeholder="Enter Message"><br>
+    <input type="number" id="count" placeholder="Number of Times" min="1"><br>
+    <button onclick="startSpam()">Start Spamming</button>
+    <p id="status"></p>
+
+<script>
+function startSpam() {
+    const link = document.getElementById("link").value.trim();
+    const message = document.getElementById("message").value.trim();
+    const count = document.getElementById("count").value.trim();
+    const status = document.getElementById("status");
+    status.textContent = "Sending...";
+
+    const formData = new FormData();
+    formData.append("link", link);
+    formData.append("message", message);
+    formData.append("count", count);
+
+    fetch("/spam", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        status.textContent = `Sent: ${data.sent}. Errors: ${data.errors.join(", ") || "None"}`;
+    })
+    .catch(err => {
+        status.textContent = "Error: " + err;
+    });
+}
+</script>
+</body>
+</html>
